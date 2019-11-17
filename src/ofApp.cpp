@@ -81,11 +81,7 @@ void ofApp::draw(){
     int iWidth = ofGetWindowWidth();
     
     //----Ableton Link indicator
-    /*
-    float x = ofGetWidth() * link.getPhase() / link.getQuantum();
-    ofSetColor(255, 0, 0);
-    ofDrawRectangle(x, 4*iHeight/5, 10, iHeight/5);
-    */
+    
     gui->getTextInput(txtAbletonLinkPeers)->setText(ofToString(link.getNumPeers()));
     gui->getSlider("Ableton Link")->setValue( 1+ 4*link.getPhase() / link.getQuantum() );
     gui->getTextInput(txtBPM)->setText( ofToString(bpm, 2) );
@@ -98,11 +94,7 @@ void ofApp::draw(){
     << "phase: " << link.getPhase() << std::endl
     << "peers: " << link.getNumPeers() << std::endl;
     */
-    
-    /*
-    ofSetColor(255);
-     */
-    
+
     /*
      ofDrawBitmapString(ss.str(), 20, 20);
      ofDrawBitmapString("BPM: " + ofToString(bpmTapper.bpm()), 20, 120);

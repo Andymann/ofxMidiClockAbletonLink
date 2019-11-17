@@ -19,7 +19,7 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
 
         ofTrueTypeFont font;
         string TITLE = "MidiClock to Ableton Link v0.8a";
-        string txtMsg = "www.Doktor-Andy.de                            #fcksbt";
+        string txtMsg = "www.Andyland.info                            #fcksbt";
     
         ofxAbletonLink link;
         ofxMidiIn midiIn;
