@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:">
+      location = "self:/Users/andyfischer/Documents/openFrameworks/apps/myApps/ofxMidiClockAbletonLink/ofxMidiClockAbletonLink.xcodeproj">
    </FileRef>
 </Workspace>
