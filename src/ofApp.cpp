@@ -81,7 +81,6 @@ void ofApp::draw(){
     int iWidth = ofGetWindowWidth();
     
     //----Ableton Link indicator
-    
     gui->getTextInput(txtAbletonLinkPeers)->setText(ofToString(link.getNumPeers()));
     gui->getSlider("Ableton Link")->setValue( 1+ 4*link.getPhase() / link.getQuantum() );
     gui->getTextInput(txtBPM)->setText( ofToString(bpm, 2) );
@@ -95,19 +94,6 @@ void ofApp::draw(){
     << "peers: " << link.getNumPeers() << std::endl;
     */
 
-    /*
-     ofDrawBitmapString(ss.str(), 20, 20);
-     ofDrawBitmapString("BPM: " + ofToString(bpmTapper.bpm()), 20, 120);
-     ofDrawBitmapString("Hit any key to tap BPM", 50, 120);
-     ofDrawBitmapString("BPM: " + ofToString(bpmTapper.bpm()), 50, 100);
-     //bpmTapper.draw(50, 200, 10);
-     */
-    
-    /*
-    ofDrawBitmapString((clockRunning ? "MIDI clock: running" : "MIDI clock: stopped"), iWidth/2, 30);
-    ofDrawBitmapString("pos MIDI beats: "+ofToString(beats), iWidth/2, 58);
-    ofDrawBitmapString("pos seconds: "+ofToString(seconds), iWidth/2, 74);
-    */
     
     // a MIDI beat is a 16th note, so do a little math to convert to a time signature:
     // 4/4 -> 4 notes per bar & quarter note = 1 beat, add 1 to count from 1 instead of 0
@@ -115,10 +101,6 @@ void ofApp::draw(){
     int bars = (quarters / 4) + 1; // compute # of bars
     int beatsInBar = (quarters % 4) + 1; // compute remainder as # notes within the current bar
     
-    /*
-    ofDrawBitmapString("4/4 bars: "+ofToString(bars)+" beat: "+ofToString(beatsInBar), iWidth/2, 90);
-    ofDrawBitmapString("bpm: "+ofToString(round(bpm)), iWidth/2, 130);
-    */
     
     if(beatsInBar==1){
         //ofLog() << "New DownBeat";
@@ -135,32 +117,10 @@ void ofApp::draw(){
         }
     }
     
-    /*
-    int iBoxWidth = iWidth/4;
-    ofSetColor(0, 0, 255 * (beatsInBar==1));
-    ofDrawRectangle(0, 3*iHeight/5, iBoxWidth, iHeight/5);
-    
-    ofSetColor(0, 0, 255 * (beatsInBar==2));
-    ofDrawRectangle(iBoxWidth, 3*iHeight/5, iBoxWidth, iHeight/5);
-    
-    ofSetColor(0, 0, 255 * (beatsInBar==3));
-    ofDrawRectangle(2*iBoxWidth, 3*iHeight/5, iBoxWidth, iHeight/5);
-    
-    ofSetColor(0, 0, 255 * (beatsInBar==4));
-    ofDrawRectangle(3*iBoxWidth, 3*iHeight/5, iBoxWidth, iHeight/5);
-    */
     gui->getSlider("MIDI Step:")->setValue( beatsInBar );
     gui->getTextInput(txtMidiClockState)->setText( clockRunning ? "running" : "stopped" );
     gui->getTextInput(txtMidiClockBeats)->setText( ofToString(beats) );
     
-    //ofPushMatrix();
-    //ofTranslate(10, 5*ofGetHeight()/6);
-    
-    /*
-    string text = "Growing and Shrinking!";
-    float fontWidth = font.stringWidth(text);
-    font.drawString(text, -fontWidth/2, 0);
-    */
     ofSetColor(100, 100, 100);
     font.drawString(txtMsg, 10, ofGetHeight()-10);
     
@@ -233,6 +193,7 @@ void ofApp::newMidiMessage(ofxMidiMessage& message) {
         case MIDI_STOP:
             if(clockRunning) {
                 clockRunning = false;
+                stopLink();
                 ofLog() << "clock stopped";
             }
             break;
@@ -240,39 +201,25 @@ void ofApp::newMidiMessage(ofxMidiMessage& message) {
         default:
             break;
     }
- /*
-    // update the timecode pos
-    if(timecode.update(message.bytes)) {
-        
-        // we got a new frame pos
-        frame = timecode.getFrame();
-        
-        // if the last message was a timecode quarter frame message,
-        // then assume the timecode master has started playback
-        if(message.status == MIDI_TIME_CODE) {
-            if(!timecodeRunning) {
-                timecodeRunning = true;
-                ofLog() << "timecode started";
-            }
-            timecodeTimestamp = ofGetElapsedTimeMillis();
-        }
-    }
-*/
 }
 
 void ofApp::retriggerLink(){
-    
-    //float lastTime = ofGetElapsedTimef();
-    //while (ofGetElapsedTimef()< lastTime + sliderVal){
-    //    ofLog() << "Retrigger.Wait:" << sliderVal;
-    //}
+
     //if(ofGetElapsedTimef() > starttime+desiredlengthofnote -> note off.
     bReact = false;
-//    ofLog() << "Retrigger.Wait:" << sliderVal;
     bpm = bpm/2;
     ofSleepMillis(iRetriggerDelay);
     beats = 1;
+    link.setIsPlaying(true);
     link.setBeatForce(0);
+    bReact = true;
+}
+
+void ofApp::stopLink(){
+    
+    bReact = false;
+    link.setBeatForce(0);
+    link.setIsPlaying(false);
     bReact = true;
 }
 
