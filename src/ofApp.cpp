@@ -1,9 +1,6 @@
 #include "ofApp.h"
 
-/*
-    All components instantiated within a gui
-    https://github.com/braitsch/ofxDatGui @braitsch
-*/
+const string LBL_RETRIGGER_WAIT = "Retrigger wait";
 
 void ofApp::setup()
 {
@@ -15,11 +12,11 @@ void ofApp::setup()
     
     font.load(OF_TTF_MONO, 23);
         
-    ofAddListener(link.bpmChanged, this, &ofApp::bpmChanged);
-    ofAddListener(link.numPeersChanged, this, &ofApp::numPeersChanged);
+//    ofAddListener(link.bpmChanged, this, &ofApp::bpmChanged);
+//    ofAddListener(link.numPeersChanged, this, &ofApp::numPeersChanged);
     
     
-// instantiate and position the gui //
+    // instantiate and position the gui //
     gui = new ofxDatGui( ofxDatGuiAnchor::TOP_LEFT );
     
     // add a dropdown menu //
@@ -27,7 +24,7 @@ void ofApp::setup()
     gui->addDropdown("Select MidiPort", opts);
     gui->addLabel("---- Midi Clock ----");
     
-    gui->addSlider("Retrigger wait", 0, 100, iRetriggerDelay);
+    gui->addSlider(LBL_RETRIGGER_WAIT, 0, 100, iRetriggerDelay);
     
     //----Midi Clock
     gui->addSlider("MIDI Step:",0,4);
@@ -43,10 +40,7 @@ void ofApp::setup()
     gui->addTextInput(txtAbletonLinkPeers, "");
     gui->addSlider("Ableton Link",1, 5);
     
-    
-    
-    
-    
+
 // once the gui has been assembled, register callbacks to listen for component specific events //
     gui->onSliderEvent(this, &ofApp::onSliderEvent);
     gui->onDropdownEvent(this, &ofApp::onDropdownEvent);
@@ -54,6 +48,9 @@ void ofApp::setup()
     //gui->setTheme(new ofxDatGuiThemeSmoke());
     gui->setTheme(new myCustomTheme() );
     gui->setWidth(1024);
+
+    thread.startThread(false); // NON-Blocking?
+    thread.setRetriggerDelay(50);
 }
 
 void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
@@ -61,9 +58,11 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     //cout << "onSliderEvent: " << e.target->getLabel() << " " << e.target->getValue() << endl;
     //if (e.target->is("datgui opacity")) gui->setOpacity(e.scale);
     
-    if (e.target->is("Retrigger Delay")){
+    //if (e.target->getLabel()("Retrigger Delay")){
+    if (e.target->getLabel().compare(LBL_RETRIGGER_WAIT)==0){
         iRetriggerDelay = (int)e.value;
-        //cout << "Trigger Delay:" << iRetriggerDelay;
+        thread.setRetriggerDelay(iRetriggerDelay);
+        //cout << "Trigger Delay:" << iRetriggerDelay << endl;
     }
     
     
@@ -75,14 +74,18 @@ void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
     setMidiPort( e.target->getLabel() );
 }
 
+int oldBeatsInBar=0;
+bool bForceNewBeat  = false;
+bool bWaitingForRetriggerLink=false;
+
 void ofApp::draw(){
     
     int iHeight = ofGetWindowHeight();
     int iWidth = ofGetWindowWidth();
     
     //----Ableton Link indicator
-    gui->getTextInput(txtAbletonLinkPeers)->setText(ofToString(link.getNumPeers()));
-    gui->getSlider("Ableton Link")->setValue( 1+ 4*link.getPhase() / link.getQuantum() );
+    gui->getTextInput(txtAbletonLinkPeers)->setText(ofToString(thread.getLinkNumPeers()));
+    gui->getSlider("Ableton Link")->setValue( 1+ 4*thread.getLinkPhase() / thread.getLinkQuantum() );
     gui->getTextInput(txtBPM)->setText( ofToString(bpm, 2) );
     
     /*
@@ -101,6 +104,10 @@ void ofApp::draw(){
     int bars = (quarters / 4) + 1; // compute # of bars
     int beatsInBar = (quarters % 4) + 1; // compute remainder as # notes within the current bar
     
+    if(beatsInBar != oldBeatsInBar){
+        oldBeatsInBar = beatsInBar;
+        bForceNewBeat = true;
+    }
     
     if(beatsInBar==1){
         //ofLog() << "New DownBeat";
@@ -113,7 +120,15 @@ void ofApp::draw(){
         if( bResetNext ){
             bResetNext = false;
             beatsInBar = 1;
-            link.setBeatForce(0.0);
+            //link.setBeatForce(0);
+            
+           
+        }else{
+            if(bForceNewBeat==true){     
+                bForceNewBeat=false;
+                //link.setBeatForce(beatsInBar-1);
+                //cout << "Link set beatforce:" << (beatsInBar-1) << endl;
+            }
         }
     }
     
@@ -125,7 +140,13 @@ void ofApp::draw(){
     font.drawString(txtMsg, 10, ofGetHeight()-10);
     
     
-    
+    if(bWaitingForRetriggerLink==true){
+        //if(ofGetElapsedTimeMillis()>=iRetriggerDelay){
+        //    cout << ofGetElapsedTimeMillis() << " retrigger link" << endl;
+        //    retriggerLink();
+        //    bWaitingForRetriggerLink=false;
+        //}
+    }
     //ofPopMatrix();
 }
 
@@ -138,12 +159,15 @@ void ofApp::update(){
         timecodeRunning = false;
     }
     
-    link.setBPM( bpm );
+    thread.setLinkBPM( bpm );
     
     if( bNewDownbeat){
         bNewDownbeat=false;
         ofLog() << "New DownBeat";
+        
     }
+
+    
     
 }
 
@@ -151,6 +175,7 @@ void ofApp::keyPressed(int key)
 {
 
 }
+
 
 
 void ofApp::newMidiMessage(ofxMidiMessage& message) {
@@ -177,17 +202,23 @@ void ofApp::newMidiMessage(ofxMidiMessage& message) {
         case MIDI_TIME_CLOCK:
             if( bReact ){
                 seconds = clock.getSeconds();
-                bpm += (clock.getBpm() - bpm) / 5; // average the last 5 bpm values
+                bpm += (clock.getBpm() - bpm) / 25; // average the last 5 bpm values
                 // no break here so the next case statement is checked,
                 // this way we can set clockRunning if we've missed a MIDI_START
                 // ie. master was running before we started this example
             }
             // transport control
-        case MIDI_START: case MIDI_CONTINUE:
+        case MIDI_START: /*case MIDI_CONTINUE:*/
             if(!clockRunning) {
                 clockRunning = true;
-                retriggerLink();
-                ofLog() << "clock started";
+                //if(iRetriggerDelay<100){
+                    //ofSleepMillis(500-iRetriggerDelay);
+                //}
+                //ofResetElapsedTimeCounter();
+                bWaitingForRetriggerLink=true;
+                //ofLog() << "clock started";
+                //cout << ofGetElapsedTimeMillis() << " Clock started" << endl;
+                thread.resetTimer();
             }
             break;
         case MIDI_STOP:
@@ -207,19 +238,22 @@ void ofApp::retriggerLink(){
 
     //if(ofGetElapsedTimef() > starttime+desiredlengthofnote -> note off.
     bReact = false;
-    bpm = bpm/2;
-    ofSleepMillis(iRetriggerDelay);
+    //bpm = bpm/2;
+    //if(ofGetElapsedTimeMillis>=iRetriggerDelay){
+        
+    //}
     beats = 1;
-    link.setIsPlaying(true);
-    link.setBeatForce(0);
+    thread.setLinkIsPlaying(true);
+    thread.setLinkBeatForce(0);
     bReact = true;
+    cout << "ofApp:RetriggerLink" << endl;
 }
 
 void ofApp::stopLink(){
     
     bReact = false;
-    link.setBeatForce(0);
-    link.setIsPlaying(false);
+    thread.setLinkBeatForce(0);
+    thread.setLinkIsPlaying(false);
     bReact = true;
 }
 
@@ -252,5 +286,6 @@ void ofApp::exit(){
     // clean up
     midiIn.closePort();
     midiIn.removeListener(this);
+    thread.stopThread();
 }
 

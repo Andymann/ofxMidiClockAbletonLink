@@ -7,21 +7,79 @@
 #include "ofxMidiClock.h"
 #include "ofxMidiTimecode.h"
 
+
+class MyThread : public ofThread {
+
+    ofxAbletonLink link;
+
+    bool bWaitingForStuff  =false;
+    int iRetriggerDelay = 0;
+    // the thread function
+    void threadedFunction() {
+        // start
+        while(isThreadRunning()) {
+            if(bWaitingForStuff==true){
+                if(ofGetElapsedTimeMillis()>=iRetriggerDelay){
+                    cout << "Thread:" << ofGetElapsedTimeMillis() << " retrigger link" << endl;
+                    //retriggerLink();
+                    //bWaitingForRetriggerLink=false;
+                    bWaitingForStuff=false;
+                    //Parent::retriggerLink();
+                }
+            }
+        }
+    }
+
+    public:
+        void resetTimer(){
+            ofResetElapsedTimeCounter();
+            bWaitingForStuff = true;
+        }
+
+        void setRetriggerDelay(int pDelay){
+            this->iRetriggerDelay  = pDelay;
+        }
+
+        void setLinkBPM(double pBPM){
+            link.setBPM(pBPM);
+        }
+
+        void setLinkIsPlaying(bool p){
+            link.setIsPlaying(p);
+        }
+
+        void setLinkBeatForce(int p){
+            link.setBeatForce(p);
+        }
+
+        int getLinkNumPeers(){
+            return link.getNumPeers();
+        }
+
+        int getLinkPhase(){
+            return link.getPhase();
+        }
+
+        int getLinkQuantum(){
+            return link.getQuantum();
+        }
+};
+
+
 class ofApp : public ofBaseApp, public ofxMidiListener{
 
 	public:
     
-        
         void setup();
         void draw();
         void update();
         void exit();
 
         ofTrueTypeFont font;
-        string TITLE = "MidiClock to Ableton Link v0.9";
-        string txtMsg = "www.Andyland.info                            #fcksbt";
+        string TITLE = "MidiClock to Ableton Link v0.99";
+        string txtMsg = "www.Andyland.info";
     
-        ofxAbletonLink link;
+        //ofxAbletonLink link;
         ofxMidiIn midiIn;
         ofxDatGui* gui;
     
@@ -66,6 +124,8 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
         }
     
         void setMidiPort(string pPortName);
+    
+        MyThread thread;
 };
 
 class myCustomTheme : public ofxDatGuiTheme{
@@ -76,3 +136,4 @@ public:
         init();
     }
 };
+
