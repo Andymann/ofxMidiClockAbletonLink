@@ -17,7 +17,7 @@ git clone https://github.com/openframeworks/openFrameworks.git --branch stable
 cd openFrameworks/addons  
 git clone https://github.com/braitsch/ofxDatGui.git  
 git clone https://github.com/danomatika/ofxMidi.git  
-git clone --recursive git@github.com:2bbb/ofxAbletonLink.git  
+git clone --recursive https://github.com/2bbb/ofxAbletonLink.git  
 cd ../apps/  
 mkdir myApps  
 cd myApps/  
