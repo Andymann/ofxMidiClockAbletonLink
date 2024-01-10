@@ -8,7 +8,9 @@ ofxMidi         https://github.com/danomatika/ofxMidi<br>
 Please clone and process these addons according to their respective READMEs  
   
 
-If you are unfamiliar with openFrameworks but want to build the binaries yourself run the following commands in a terminal (MacOS).  
+
+  
+If you are new to openFrameworks and want to build the binaries yourself run the following commands in a terminal (MacOS).  
 It might take ~10-15 minutes depending on your download speed etc:
 
 git clone https://github.com/openframeworks/openFrameworks.git --branch stable  
