@@ -91,10 +91,10 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
         string txtBPM = "BPM:";
         string txtAbletonLinkPeers ="Link Peers:";
         double bpm = 120; //< song tempo in bpm, computed from clock length
-        Boolean bReact = true;
-        Boolean bNewDownbeat = false;
-        Boolean bWaitingForDownbeat = true;
-        Boolean bResetNext = false;
+        bool bReact = true;
+        bool bNewDownbeat = false;
+        bool bWaitingForDownbeat = true;
+        bool bResetNext = false;
         int iRetriggerDelay = 50;
         string txtMidiClockState  ="MIDI Clock:";
         string txtMidiClockBeats = "MIDI Beats:";
