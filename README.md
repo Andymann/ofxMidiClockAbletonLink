@@ -5,4 +5,21 @@ ofxDatGui       https://github.com/braitsch/ofxDatGui<br>
 ofxAbletonLink  https://github.com/2bbb/ofxAbletonLink<br>
 ofxMidi         https://github.com/danomatika/ofxMidi<br>
 
-Please clone and process these addons according to their respective READMEs
+Please clone and process these addons according to their respective READMEs  
+  
+
+If you are unfamiliar with openFrameworks but want to build the binaries yourself run the following commands in a terminal (MacOS).  
+It might take ~10-15 minutes depending on your download speed etc:
+
+git clone https://github.com/openframeworks/openFrameworks.git --branch stable  
+cd openFrameworks/addons  
+git clone https://github.com/braitsch/ofxDatGui.git  
+git clone https://github.com/danomatika/ofxMidi.git  
+git clone --recursive git@github.com:2bbb/ofxAbletonLink.git  
+cd ../apps/  
+mkdir myApps  
+cd myApps/  
+git clone https://github.com/Andymann/ofxMidiClockAbletonLink.git  
+cd ofxMidiClockAbletonLink/  
+make  
+open ./bin  
