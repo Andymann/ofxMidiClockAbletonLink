@@ -26,5 +26,5 @@ cd ../apps/myApps/
 git clone https://github.com/Andymann/ofxMidiClockAbletonLink.git   
 cd ofxMidiClockAbletonLink/   
 rm -r ./bin/ofxMidiClockAbletonLink.app   
-make Debug  
+make clean && make  
 open ./bin    
