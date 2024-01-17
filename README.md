@@ -15,6 +15,7 @@ It might take ~10-15 minutes depending on your download speed etc:
 
 curl -L -o ofx.zip https://github.com/openframeworks/openFrameworks/releases/download/0.12.0/of_v0.12.0_osx_release.zip   
 unzip ofx.zip  
+rm ofx.zip   
 mv of_v0.12.0_osx_release openFrameworks/   
 cd openFrameworks/   
 export OF_ROOT=$(pwd)   
