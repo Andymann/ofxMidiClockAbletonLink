@@ -7,12 +7,16 @@ ofxMidi         https://github.com/danomatika/ofxMidi<br>
 
 Please clone and process these addons according to their respective READMEs  
   
-
+   
+   
+     
+If you are new to openFrameworks and want to build the binaries yourself run the following commands in a terminal (MacOS).  
+It might take ~10-15 minutes depending on your download speed etc.  
+  
+Please notice:  
+These instructions are tested on MacOS Big Sur and Sonoma. If you are running an older version of MacOS the build might fail. On MacOS Mojave, for example, we successfully compiled the application with openFrameworks v0.10.1.  
 
   
-If you are new to openFrameworks and want to build the binaries yourself run the following commands in a terminal (MacOS).  
-It might take ~10-15 minutes depending on your download speed etc:
-
 curl -L -o ofx.zip https://github.com/openframeworks/openFrameworks/releases/download/0.12.0/of_v0.12.0_osx_release.zip   
 unzip ofx.zip  
 rm ofx.zip   
