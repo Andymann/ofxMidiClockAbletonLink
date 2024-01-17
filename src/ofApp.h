@@ -91,7 +91,7 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
         void exit();
 
         ofTrueTypeFont font;
-        string TITLE = "MidiClock to Ableton Link v1.01";
+        string TITLE = "MidiClock to Ableton Link v1.02";
         string txtMsg = "www.Andyland.info";
     
         //ofxAbletonLink link;
@@ -127,9 +127,7 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
     
         void newMidiMessage(ofxMidiMessage& eventArgs);
         void retriggerDelayChanged(int & circleResolution);
-        //void retriggerLink();
-        void stopLink();
-    
+        
         void bpmChanged(double &bpm) {
             //        ofLogNotice("bpmChanged") << bpm;
         }

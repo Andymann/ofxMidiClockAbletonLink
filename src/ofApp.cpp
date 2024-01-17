@@ -18,7 +18,7 @@ void ofApp::setup()
     // add a dropdown menu //
     vector<string> opts = {midiIn.getInPortList()/*"option - 1", "option - 2", "option - 3", "option - 4"*/};
     gui->addDropdown("Select MidiPort", opts);
-    gui->addLabel("---- Midi Clock ----");
+    //gui->addLabel("---- Midi Clock ----");
     
     gui->addSlider(LBL_RETRIGGER_WAIT, 0, 200, iRetriggerDelay);
     
@@ -191,14 +191,6 @@ void ofApp::newMidiMessage(ofxMidiMessage& message) {
     }
 }
 
-void ofApp::stopLink(){
-  //  
-  //  bReact = false;
-  //  thread.setLinkBeatForce(0);
-  //  thread.setLinkIsPlaying(false);
-  //  thread.stopLink();
-  //  bReact = true;
-}
 
 void bpmChanged(double &bpm) {
     //        ofLogNotice("bpmChanged") << bpm;
@@ -221,8 +213,6 @@ void ofApp::setMidiPort(string pPortName){
     // add ofApp as a listener
     midiIn.addListener(this);
     cout << "setMidiPoprt: " << pPortName << " Selected" << endl;
-    
-    
 }
     
 void ofApp::exit(){
