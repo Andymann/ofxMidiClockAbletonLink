@@ -7,6 +7,8 @@
 #include "ofxMidiClock.h"
 #include "ofxMidiTimecode.h"
 
+const string LBL_RETRIGGER_WAIT = "Retrigger wait";
+const string LBL_BEATSTEP = "Beat Step:";
 
 class MyThread : public ofThread {
 
@@ -21,10 +23,10 @@ class MyThread : public ofThread {
             if(bWaitingForStuff==true){
                 if(ofGetElapsedTimeMillis()>=iRetriggerDelay){
                     cout << "Thread:" << ofGetElapsedTimeMillis() << " retrigger link" << endl;
-                    //retriggerLink();
                     //bWaitingForRetriggerLink=false;
                     bWaitingForStuff=false;
-                    //Parent::retriggerLink();
+                    //ofApp::retriggerLink();
+                    startLink();
                 }
             }
         }
@@ -34,6 +36,19 @@ class MyThread : public ofThread {
         void resetTimer(){
             ofResetElapsedTimeCounter();
             bWaitingForStuff = true;
+        }
+
+        void startLink(){
+            ofLog() << "start link";
+            //link.setPhase(0);
+            link.setQuantum(4);
+            link.setBeatForce(0);
+            link.play();
+        }
+
+        void stopLink(){
+            //ofLog() << "stop link";
+            link.stop();
         }
 
         void setRetriggerDelay(int pDelay){
@@ -76,7 +91,7 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
         void exit();
 
         ofTrueTypeFont font;
-        string TITLE = "MidiClock to Ableton Link v0.99";
+        string TITLE = "MidiClock to Ableton Link v1.01";
         string txtMsg = "www.Andyland.info";
     
         //ofxAbletonLink link;
@@ -94,10 +109,10 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
         bool bReact = true;
         bool bNewDownbeat = false;
         bool bWaitingForDownbeat = true;
-        bool bResetNext = false;
+        //bool bResetNext = false;
         int iRetriggerDelay = 50;
         string txtMidiClockState  ="MIDI Clock:";
-        string txtMidiClockBeats = "MIDI Beats:";
+        //string txtMidiClockBeats = "MIDI Beats:";
     
         // MIDI TIMECODE
         ofxMidiTimecode timecode; //< timecode message parser
@@ -112,7 +127,7 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
     
         void newMidiMessage(ofxMidiMessage& eventArgs);
         void retriggerDelayChanged(int & circleResolution);
-        void retriggerLink();
+        //void retriggerLink();
         void stopLink();
     
         void bpmChanged(double &bpm) {
@@ -136,4 +151,3 @@ public:
         init();
     }
 };
-
