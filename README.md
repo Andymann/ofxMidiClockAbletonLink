@@ -17,7 +17,7 @@ Please notice:
 These instructions are tested on MacOS Big Sur and Sonoma. If you are running an older version of MacOS the build might fail. On MacOS Mojave, for example, we successfully compiled the application with openFrameworks v0.10.1.  
 
   
-curl -L -o ofx.zip https://github.com/openframeworks/openFrameworks/releases/download/0.12.0/of_v0.12.0_osx_release.zip   
+curl -k -L -o ofx.zip https://github.com/openframeworks/openFrameworks/releases/download/0.12.0/of_v0.12.0_osx_release.zip   
 unzip ofx.zip  
 rm ofx.zip   
 mv of_v* openFrameworks/   
