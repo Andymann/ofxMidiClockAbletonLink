@@ -25,6 +25,6 @@ git clone --recursive https://github.com/2bbb/ofxAbletonLink.git
 cd ../apps/myApps/   
 git clone https://github.com/Andymann/ofxMidiClockAbletonLink.git   
 cd ofxMidiClockAbletonLink/   
-rm -r ./bin/ofxMidiClockAbletonLink.app   
+echo y|rm -r ./bin/ofxMidiClockAbletonLink.app   
 make clean && make  
 open ./bin    
