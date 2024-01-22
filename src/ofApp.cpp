@@ -211,8 +211,10 @@ void ofApp::setMidiPort(string pPortName){
     
 void ofApp::exit(){
     // clean up
+    thread.waitForThread(true, 1000);
     midiIn.closePort();
     midiIn.removeListener(this);
-    thread.stopThread();
+    //thread.stopThread();
+    
 }
 
