@@ -6,7 +6,7 @@ void ofApp::setup()
 {
     ofSetWindowTitle(TITLE);
     ofSetBackgroundColor(0, 0, 0);
-    ofSetVerticalSync(true);
+    //ofSetVerticalSync(true);
     ofSetFrameRate(30);
     ofSetEscapeQuitsApp(false);
     
@@ -68,6 +68,7 @@ void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
 void ofApp::draw(){
 
     //Just to save *some* drawing operations
+    
     if(iCounter==0){
         thread.setLinkBPM( bpm );
 
@@ -83,7 +84,7 @@ void ofApp::draw(){
         iCounter=-1;
     }
     iCounter++;
-
+    
     // a MIDI beat is a 16th note, so do a little math to convert to a time signature:
     // 4/4 -> 4 notes per bar & quarter note = 1 beat, add 1 to count from 1 instead of 0
     int quarters = beats / 4; // convert total # beats to # quarters
@@ -101,16 +102,9 @@ void ofApp::draw(){
     
     if(clockRunning){
         gui->getSlider(LBL_BEATSTEP)->setValue( (int)beatsInBar );
-        //gui->getSlider("Ableton Link")->setValue( beatsInBar );
     }else{
         gui->getSlider(LBL_BEATSTEP)->setValue( 0 );
-        //gui->getSlider("Ableton Link")->setValue( 0 );
     }
-    //gui->getTextInput(txtMidiClockState)->setText( clockRunning ? "running" : "stopped" );
-    //gui->getTextInput(LBL_BEATSTEP)->setText( ofToString(beats) );
-
-    //gui->getTextInput(txtAbletonLinkPeers)->setText(ofToString(thread.getLinkNumPeers()));
-    //gui->getTextInput(txtBPM)->setText( ofToString(bpm, 2) );
 
     ofSetColor(100, 100, 100);
     font.drawString(txtMsg, 10, ofGetHeight()-10);

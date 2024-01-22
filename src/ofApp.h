@@ -9,6 +9,7 @@
 
 const string LBL_RETRIGGER_WAIT = "Retrigger wait";
 const string LBL_BEATSTEP = "Beat Step:";
+const string TITLE = "MidiClock to Ableton Link v1.03";
 
 class MyThread : public ofThread {
 
@@ -28,6 +29,8 @@ class MyThread : public ofThread {
                     //ofApp::retriggerLink();
                     startLink();
                 }
+            }else{
+                sleep(100);
             }
         }
     }
@@ -91,7 +94,6 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
         void exit();
 
         ofTrueTypeFont font;
-        string TITLE = "MidiClock to Ableton Link v1.02";
         string txtMsg = "www.Andyland.info";
     
         //ofxAbletonLink link;
