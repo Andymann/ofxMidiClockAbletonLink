@@ -242,7 +242,7 @@ bool ofApp::loadSettings(){
 bool ofApp::saveSettings(string pAttribute, string pValue){
     //cout << "saveSettings: " << midiIn << " Selected" << endl;
     xmlSettings.setValue(pAttribute, pValue);
-    xmlSettings.save();
+    xmlSettings.saveFile( ofFilePath::addTrailingSlash(ofFilePath::getAbsolutePath( ofToDataPath("") + ".." )) + "settings.xml" );
     return true;
 }
 
