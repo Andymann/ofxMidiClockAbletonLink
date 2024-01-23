@@ -27,7 +27,7 @@ export OF_ROOT=$(pwd)
 cd addons/   
 git clone https://github.com/braitsch/ofxDatGui.git   
 git clone https://github.com/danomatika/ofxMidi.git   
-got clone https://github.com/geoffdonaldson/ofxXmlSettings   
+git clone https://github.com/geoffdonaldson/ofxXmlSettings   
 git clone --recursive https://github.com/2bbb/ofxAbletonLink.git   
 cd ../apps/myApps/   
 git clone https://github.com/Andymann/ofxMidiClockAbletonLink.git   
