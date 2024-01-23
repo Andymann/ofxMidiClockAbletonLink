@@ -17,7 +17,7 @@ void ofApp::setup()
     
     // add a dropdown menu //
     vector<string> opts = {midiIn.getInPortList()/*"option - 1", "option - 2", "option - 3", "option - 4"*/};
-    gui->addDropdown("Select MidiPort", opts);
+    cmbMidiIn = gui->addDropdown("Select MidiPort", opts);
     //gui->addLabel("---- Midi Clock ----");
     
     gui->addSlider(LBL_RETRIGGER_WAIT, 0, 200, iRetriggerDelay);
@@ -45,6 +45,8 @@ void ofApp::setup()
 
     thread.startThread(false); // NON-Blocking?
     thread.setRetriggerDelay(50);
+
+    loadSettings();
 }
 
 void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
@@ -57,7 +59,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
 void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
 {
-    cout << "onDropdownEvent: " << e.target->getLabel() << " Selected" << endl;
+    //cout << "onDropdownEvent: " << e.target->getLabel() << " Selected" << endl;
     setMidiPort( e.target->getLabel() );
 }
 
@@ -206,8 +208,44 @@ void ofApp::setMidiPort(string pPortName){
     
     // add ofApp as a listener
     midiIn.addListener(this);
-    cout << "setMidiPoprt: " << pPortName << " Selected" << endl;
+    //cout << "setMidiPort: " << pPortName << " Selected" << endl;
+    saveSettings("MidiPort", pPortName); 
 }
+
+bool ofApp::loadSettings(){
+    bool bReturn = true;
+    if (xmlSettings.loadFile( ofFilePath::addTrailingSlash(ofFilePath::getAbsolutePath( ofToDataPath("") + ".." )) + "settings.xml" )) {
+        //cout << "XML Settings file at least exists" << endl;
+        string sMidiInPort = xmlSettings.getValue("MidiPort", "");
+        if(!sMidiInPort.empty() ){
+            vector<string> optsMidi_In = {midiIn.getInPortList()};
+            //optsMidi_In.push_back(LBL_NONE);
+
+            for(int i=0; i<optsMidi_In.size(); i++){
+                if(optsMidi_In[i] == sMidiInPort){
+                    cmbMidiIn->select(i);
+                    //midiIn.se
+                    setMidiPort(sMidiInPort);
+                       ;//addDropdown("Select MidiPort", opts);
+                    //cmbMidiIn->setLabel(sMidiInPort);
+                    break;
+                }
+            }
+        }
+    }else{
+        bReturn = false;
+        cout << "Could not load xml. Reverting to default values." << endl;
+    }
+    return bReturn;
+}
+
+bool ofApp::saveSettings(string pAttribute, string pValue){
+    //cout << "saveSettings: " << midiIn << " Selected" << endl;
+    xmlSettings.setValue(pAttribute, pValue);
+    xmlSettings.save();
+    return true;
+}
+
     
 void ofApp::exit(){
     // clean up

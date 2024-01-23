@@ -1,3 +1,4 @@
 ofxAbletonLink
 ofxDatGui
 ofxMidi
+ofxXmlSettings

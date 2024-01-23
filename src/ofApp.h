@@ -6,10 +6,11 @@
 #include "ofxMidi.h"
 #include "ofxMidiClock.h"
 #include "ofxMidiTimecode.h"
+#include "ofxXmlSettings.h"
 
 const string LBL_RETRIGGER_WAIT = "Retrigger wait";
 const string LBL_BEATSTEP = "Beat Step:";
-const string TITLE = "MidiClock to Ableton Link v1.03";
+const string TITLE = "MidiClock to Ableton Link v1.04";
 
 class MyThread : public ofThread {
 
@@ -23,7 +24,7 @@ class MyThread : public ofThread {
         while(isThreadRunning()) {
             if(bWaitingForStuff==true){
                 if(ofGetElapsedTimeMillis()>=iRetriggerDelay){
-                    cout << "Thread:" << ofGetElapsedTimeMillis() << " retrigger link" << endl;
+                    //cout << "Thread:" << ofGetElapsedTimeMillis() << " retrigger link" << endl;
                     //bWaitingForRetriggerLink=false;
                     bWaitingForStuff=false;
                     //ofApp::retriggerLink();
@@ -42,7 +43,7 @@ class MyThread : public ofThread {
         }
 
         void startLink(){
-            ofLog() << "start link";
+            //ofLog() << "start link";
             //link.setPhase(0);
             link.setQuantum(4);
             link.setBeatForce(0);
@@ -99,6 +100,7 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
         //ofxAbletonLink link;
         ofxMidiIn midiIn;
         ofxDatGui* gui;
+        ofxDatGuiDropdown* cmbMidiIn;
     
         ofxMidiClock clock; //< clock message parser
         bool clockRunning = false; //< is the clock sync running?
@@ -122,7 +124,11 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
         long timecodeTimestamp = 0; //< when last quarter frame message was received
         ofxMidiTimecodeFrame frame; //< timecode frame data, ie. H M S frame rate
     
+        ofxXmlSettings xmlSettings;
     
+        bool loadSettings();
+        bool saveSettings(string pAttribute, string pValue);
+
         void keyPressed(int key);
         void onSliderEvent(ofxDatGuiSliderEvent e);
         void onDropdownEvent(ofxDatGuiDropdownEvent e);
