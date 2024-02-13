@@ -2,7 +2,7 @@
 </br>
 </br>
 </br>
-<img src="https://github.com/Andymann/ofxMidiClockAbletonLink/blob/main/image.jpg" />
+<img src="https://github.com/Andymann/ofxMidiClockAbletonLink/blob/main/image.png" />
 </br>
 </br>
 </br>
