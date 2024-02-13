@@ -1,7 +1,5 @@
 # ofxMidiClockAbletonLink
 </br>
-</br>
-</br>
 <img src="https://github.com/Andymann/ofxMidiClockAbletonLink/blob/master/image.png" />
 </br>
 </br>
