@@ -1,5 +1,7 @@
 # ofxMidiClockAbletonLink
 </br>
+This tool receives MIDI clock data from a midi port and converts it into Ableton Link. It supports start/ stop.
+</br>
 <img src="https://github.com/Andymann/ofxMidiClockAbletonLink/blob/master/image.png" />
 </br>
 </br>
